@@ -16,12 +16,17 @@ dependencies {
 	// Provided by Server
 	compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
 
+	// Provided by LiveMap
+	implementation("org.bstats:bstats-bukkit:3.0.0")
+
 	// Loaded by Server
 	compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.21")
 }
 
 tasks {
 	shadowJar {
+		relocate("org.bstats", "io.github.petercrawley.livemap.libraries.org.bstats")
+
 		archiveFileName.set("../../build/${project.name}-${project.version}.jar")
 
 		minimize()
