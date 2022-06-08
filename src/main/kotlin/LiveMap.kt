@@ -14,12 +14,12 @@ import org.bukkit.plugin.java.JavaPlugin
 
 @Suppress("unused") // Entrypoint
 class LiveMap : JavaPlugin(), Listener {
-	private val worldsFile = dataFolder.resolve("worlds")
+	private val worldsDirectory = dataFolder.resolve("worlds")
 
 	override fun onEnable() {
 		Metrics(this, 15261)
 
-		worldsFile.mkdirs()
+		worldsDirectory.mkdirs()
 
 		server.pluginManager.registerEvents(this, this)
 	}
@@ -28,7 +28,7 @@ class LiveMap : JavaPlugin(), Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onWorldLoadEvent(event: WorldLoadEvent) {
-		worlds[event.world] = LiveMapWorld(worldsFile, event.world.name)
+		worlds[event.world] = LiveMapWorld(worldsDirectory, event.world.name)
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
