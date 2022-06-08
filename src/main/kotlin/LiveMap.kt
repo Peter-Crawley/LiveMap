@@ -16,6 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin
 class LiveMap : JavaPlugin(), Listener {
 	private val worldsDirectory = dataFolder.resolve("worlds")
 
+	private val worlds = mutableMapOf<World, LiveMapWorld>()
+
 	override fun onEnable() {
 		Metrics(this, 15261)
 
@@ -23,8 +25,6 @@ class LiveMap : JavaPlugin(), Listener {
 
 		server.pluginManager.registerEvents(this, this)
 	}
-
-	private val worlds = mutableMapOf<World, LiveMapWorld>()
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onWorldLoadEvent(event: WorldLoadEvent) {
