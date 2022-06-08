@@ -2,5 +2,6 @@ main: io.github.petercrawley.livemap.LiveMap
 name: LiveMap
 version: 0.1.0
 api-version: 1.18
+load: STARTUP
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:1.6.21
