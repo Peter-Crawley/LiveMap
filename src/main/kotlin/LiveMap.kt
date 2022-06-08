@@ -66,7 +66,7 @@ class LiveMap : JavaPlugin(), Listener {
 		}
 	}
 
-	private fun processChunk(
+	private inline fun processChunk(
 		chunk: Chunk,
 		handle: (world: LiveMapWorld, regionPosition: Position2D<Short>, regionChunkPosition: Position2D<Byte>) -> Unit
 	) {
