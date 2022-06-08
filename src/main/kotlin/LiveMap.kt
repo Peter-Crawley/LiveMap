@@ -22,6 +22,8 @@ class LiveMap : JavaPlugin(), Listener {
 
 	override fun onEnable() {
 		Metrics(this, 15261)
+
+		server.pluginManager.registerEvents(this, this)
 	}
 
 	private val worlds = mutableMapOf<World, LiveMapWorld>()
