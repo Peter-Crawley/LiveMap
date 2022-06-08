@@ -6,7 +6,7 @@ import java.io.RandomAccessFile
 internal class LiveMapRegion(
 	file: File
 ) {
-	internal val loadedChunks = mutableListOf<Short>()
+	internal val loadedChunks = mutableListOf<Position2D<Byte>>()
 
 	private val regionFile = RandomAccessFile(file, "rwd")
 

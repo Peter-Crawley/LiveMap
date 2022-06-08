@@ -44,37 +44,38 @@ class LiveMap : JavaPlugin(), Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onChunkLoadEvent(event: ChunkLoadEvent) {
-		processChunk(event.chunk) { world, regionKey, chunkKey ->
-			world.loadedRegions.getOrPut(regionKey) {
-				LiveMapRegion(world.worldFile.resolve("$regionKey.lmr"))
-			}.loadedChunks.add(chunkKey)
+		processChunk(event.chunk) { world, regionPosition, regionChunkPosition ->
+			world.loadedRegions.getOrPut(regionPosition) {
+				LiveMapRegion(world.worldFile.resolve("$regionPosition.lmr"))
+			}.loadedChunks.add(regionChunkPosition)
 		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onChunkUnloadEvent(event: ChunkUnloadEvent) {
-		processChunk(event.chunk) { world, regionKey, chunkKey ->
-			val region = world.loadedRegions[regionKey]!!
+		processChunk(event.chunk) { world, regionPosition, regionChunkPosition ->
+			val region = world.loadedRegions[regionPosition]!!
 
-			region.loadedChunks.remove(chunkKey)
+			region.loadedChunks.remove(regionChunkPosition)
 
 			if (region.loadedChunks.isEmpty()) {
 				region.close()
 
-				world.loadedRegions.remove(regionKey)
+				world.loadedRegions.remove(regionPosition)
 			}
 		}
 	}
 
-	private fun processChunk(chunk: Chunk, handle: (world: LiveMapWorld, regionKey: Int, chunkKey: Short) -> Unit) {
-		val world = worlds[chunk.world]!!
+	private fun processChunk(
+		chunk: Chunk,
+		handle: (world: LiveMapWorld, regionPosition: Position2D<Short>, regionChunkPosition: Position2D<Byte>) -> Unit
+	) {
+		val regionX = chunk.x.floorDiv(32).toShort()
+		val regionZ = chunk.z.floorDiv(32).toShort()
 
-		val regionX = chunk.x.floorDiv(32)
-		val regionZ = chunk.z.floorDiv(32)
-		val regionKey = regionX shl 16 + regionZ
+		val regionChunkX = (chunk.x - (regionX * 32)).toByte()
+		val regionChunkZ = (chunk.z - (regionZ * 32)).toByte()
 
-		val chunkKey = ((chunk.x - (regionX * 32)) shl 8 + (chunk.z - (regionZ * 32))).toShort()
-
-		handle(world, regionKey, chunkKey)
+		handle(worlds[chunk.world]!!, Position2D(regionX, regionZ), Position2D(regionChunkX, regionChunkZ))
 	}
 }
