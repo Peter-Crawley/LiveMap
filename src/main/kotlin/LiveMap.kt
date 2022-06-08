@@ -16,12 +16,10 @@ import org.bukkit.plugin.java.JavaPlugin
 class LiveMap : JavaPlugin(), Listener {
 	private val worldsFile = dataFolder.resolve("worlds")
 
-	init {
-		worldsFile.mkdirs()
-	}
-
 	override fun onEnable() {
 		Metrics(this, 15261)
+
+		worldsFile.mkdirs()
 
 		server.pluginManager.registerEvents(this, this)
 	}
