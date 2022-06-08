@@ -4,4 +4,4 @@ version: 0.1.0
 api-version: 1.18
 load: STARTUP
 libraries:
-  - org.jetbrains.kotlin:kotlin-stdlib:1.6.21
+  - org.jetbrains.kotlin:kotlin-stdlib:1.7.0
