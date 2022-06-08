@@ -1,5 +1,9 @@
 package io.github.petercrawley.livemap
 
-internal class LiveMapWorld {
+import java.io.File
+
+internal class LiveMapWorld(
+	internal val worldFile: File
+) {
 	internal val loadedRegions = mutableMapOf<Int, LiveMapRegion>()
 }

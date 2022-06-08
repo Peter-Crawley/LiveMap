@@ -14,6 +14,12 @@ import org.bukkit.plugin.java.JavaPlugin
 
 @Suppress("unused") // Entrypoint
 class LiveMap : JavaPlugin(), Listener {
+	private val worldsFile = dataFolder.resolve("worlds")
+
+	init {
+		worldsFile.mkdirs()
+	}
+
 	override fun onEnable() {
 		Metrics(this, 15261)
 	}
@@ -22,7 +28,11 @@ class LiveMap : JavaPlugin(), Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onWorldLoadEvent(event: WorldLoadEvent) {
-		worlds[event.world] = LiveMapWorld()
+		val worldFile = worldsFile.resolve(event.world.name)
+
+		worldFile.mkdirs()
+
+		worlds[event.world] = LiveMapWorld(worldFile)
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -33,7 +43,9 @@ class LiveMap : JavaPlugin(), Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onChunkLoadEvent(event: ChunkLoadEvent) {
 		processChunk(event.chunk) { world, regionKey, chunkKey ->
-			world.loadedRegions.getOrPut(regionKey) { LiveMapRegion() }.loadedChunks.add(chunkKey)
+			world.loadedRegions.getOrPut(regionKey) {
+				LiveMapRegion(world.worldFile.resolve("$regionKey.lmr"))
+			}.loadedChunks.add(chunkKey)
 		}
 	}
 
@@ -45,6 +57,8 @@ class LiveMap : JavaPlugin(), Listener {
 			region.loadedChunks.remove(chunkKey)
 
 			if (region.loadedChunks.isEmpty()) {
+				region.close()
+
 				world.loadedRegions.remove(regionKey)
 			}
 		}
