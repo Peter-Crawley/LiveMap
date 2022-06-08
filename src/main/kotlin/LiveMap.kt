@@ -28,11 +28,7 @@ class LiveMap : JavaPlugin(), Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onWorldLoadEvent(event: WorldLoadEvent) {
-		val worldFile = worldsFile.resolve(event.world.name)
-
-		worldFile.mkdirs()
-
-		worlds[event.world] = LiveMapWorld(worldFile)
+		worlds[event.world] = LiveMapWorld(worldsFile, event.world.name)
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -44,7 +40,7 @@ class LiveMap : JavaPlugin(), Listener {
 	fun onChunkLoadEvent(event: ChunkLoadEvent) {
 		processChunk(event.chunk) { world, regionPosition, regionChunkPosition ->
 			world.loadedRegions.getOrPut(regionPosition) {
-				LiveMapRegion(world.worldFile.resolve("$regionPosition.lmr"))
+				LiveMapRegion(world.worldDirectory.resolve("$regionPosition.lmr"))
 			}.loadedChunks.add(regionChunkPosition)
 		}
 	}
