@@ -38,7 +38,7 @@ class LiveMap : JavaPlugin(), Listener {
 	fun onChunkLoadEvent(event: ChunkLoadEvent) {
 		processChunk(event.chunk) { world, regionPosition, regionChunkPosition ->
 			world.loadedRegions.getOrPut(regionPosition) {
-				LiveMapRegion(world.worldDirectory.resolve("$regionPosition.lmr"))
+				LiveMapRegion(regionPosition, world.worldDirectory)
 			}.loadedChunks.add(regionChunkPosition)
 		}
 	}
