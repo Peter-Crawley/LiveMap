@@ -8,7 +8,5 @@ internal class LiveMapWorld(
 ) {
 	internal val worldDirectory = worldsDirectory.resolve(worldName)
 
-	init { worldDirectory.mkdirs() }
-
 	internal val loadedRegions = mutableMapOf<Position2D<Short>, LiveMapRegion>()
 }

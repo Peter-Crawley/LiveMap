@@ -8,7 +8,13 @@ internal class LiveMapRegion(
 ) {
 	internal val loadedChunks = mutableListOf<Position2D<Byte>>()
 
-	private val regionFile = RandomAccessFile(file, "rwd")
+	private val regionFile: RandomAccessFile
+
+	init {
+		file.mkdirs()
+
+		regionFile = RandomAccessFile(file, "rwd")
+	}
 
 	internal fun close() = regionFile.close()
 }

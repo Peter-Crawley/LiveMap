@@ -21,8 +21,6 @@ class LiveMap : JavaPlugin(), Listener {
 	override fun onEnable() {
 		Metrics(this, 15261)
 
-		worldsDirectory.mkdirs()
-
 		server.pluginManager.registerEvents(this, this)
 	}
 
