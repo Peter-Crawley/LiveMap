@@ -8,7 +8,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
-import org.bukkit.event.world.WorldLoadEvent
+import org.bukkit.event.world.WorldInitEvent
 import org.bukkit.event.world.WorldUnloadEvent
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -23,9 +23,8 @@ class LiveMap : JavaPlugin(), Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	fun onWorldLoadEvent(event: WorldLoadEvent) {
-		// Somehow a WorldLoadEvent is called after a ChunkLoadEvent, so add the world if it does not already exist.
-		worlds.putIfAbsent(event.world, LiveMapWorld(event.world.worldFolder))
+	fun onWorldInitEvent(event: WorldInitEvent) {
+		worlds[event.world] = LiveMapWorld(event.world.worldFolder)
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
