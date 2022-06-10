@@ -14,8 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin
 
 @Suppress("unused") // Entrypoint
 class LiveMap : JavaPlugin(), Listener {
-	private val worldsDirectory = dataFolder.resolve("worlds")
-
 	private val worlds = mutableMapOf<World, LiveMapWorld>()
 
 	override fun onEnable() {
@@ -26,7 +24,8 @@ class LiveMap : JavaPlugin(), Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onWorldLoadEvent(event: WorldLoadEvent) {
-		worlds[event.world] = LiveMapWorld(worldsDirectory, event.world.name)
+		// Somehow a WorldLoadEvent is called after a ChunkLoadEvent, so add the world if it does not already exist.
+		worlds.putIfAbsent(event.world, LiveMapWorld(event.world.worldFolder))
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -70,6 +69,9 @@ class LiveMap : JavaPlugin(), Listener {
 		val regionChunkX = (chunk.x - (regionX * 32)).toByte()
 		val regionChunkZ = (chunk.z - (regionZ * 32)).toByte()
 
-		handle(worlds[chunk.world]!!, Position2D(regionX, regionZ), Position2D(regionChunkX, regionChunkZ))
+		// Somehow a ChunkLoadEvent is called before a WorldLoadEvent, so add the world if it does not already exist.
+		val world = worlds.getOrPut(chunk.world) { LiveMapWorld(chunk.world.worldFolder) }
+
+		handle(world, Position2D(regionX, regionZ), Position2D(regionChunkX, regionChunkZ))
 	}
 }

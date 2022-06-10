@@ -4,20 +4,22 @@ import org.bukkit.Material
 import java.io.File
 
 internal class LiveMapWorld(
-	worldsDirectory: File,
-	worldName: String
+	worldsDirectory: File
 ) {
-	internal val worldDirectory = worldsDirectory.resolve(worldName)
+	internal val worldDirectory = worldsDirectory.resolve("livemap")
 
 	internal val loadedRegions = mutableMapOf<Position2D<Short>, LiveMapRegion>()
 
-	internal val blockPalette = {
+	private val blockPalette: MutableList<Material>
+
+	init {
 		worldDirectory.mkdirs()
 
 		val paletteFile = worldDirectory.resolve("pallete.lmp")
 
-		if (paletteFile.exists()) paletteFile.readLines().mapTo(mutableListOf()) { Material.valueOf(it) }
-		else {
+		blockPalette = if (paletteFile.exists()) {
+			paletteFile.readLines().mapTo(mutableListOf()) { Material.valueOf(it) }
+		} else {
 			paletteFile.createNewFile()
 			mutableListOf()
 		}
