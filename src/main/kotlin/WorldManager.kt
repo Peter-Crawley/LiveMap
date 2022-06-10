@@ -16,7 +16,7 @@ internal object WorldManager : Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	@Suppress("unused") // Entrypoint
 	fun onWorldInitEvent(event: WorldInitEvent) {
-		worlds[event.world] = LiveMapWorld(event.world.worldFolder)
+		worlds[event.world] = LiveMapWorld(event.world)
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

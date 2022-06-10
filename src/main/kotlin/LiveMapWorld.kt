@@ -1,10 +1,10 @@
 package io.github.petercrawley.livemap
 
 import org.bukkit.Material
-import java.io.File
+import org.bukkit.World
 
-internal class LiveMapWorld(worldsDirectory: File) {
-	internal val worldDirectory = worldsDirectory.resolve("livemap")
+internal class LiveMapWorld(bukkitWorld: World) {
+	internal val worldDirectory = bukkitWorld.worldFolder.resolve("livemap")
 
 	internal val loadedRegions = mutableMapOf<Position2D<Short>, LiveMapRegion>()
 
