@@ -17,6 +17,9 @@ internal class LiveMapWorld(
 		val paletteFile = worldDirectory.resolve("pallete.lmp")
 
 		if (paletteFile.exists()) paletteFile.readLines().mapTo(mutableListOf()) { Material.valueOf(it) }
-		else mutableListOf()
+		else {
+			paletteFile.createNewFile()
+			mutableListOf()
+		}
 	}
 }
