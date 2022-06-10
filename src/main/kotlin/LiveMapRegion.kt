@@ -4,10 +4,7 @@ import java.io.File
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 
-internal class LiveMapRegion(
-	regionPosition: Position2D<Short>,
-	worldDirectory: File
-) {
+internal class LiveMapRegion(regionPosition: Position2D<Short>, worldDirectory: File) {
 	init {
 		worldDirectory.mkdirs()
 	}

@@ -3,9 +3,7 @@ package io.github.petercrawley.livemap
 import org.bukkit.Material
 import java.io.File
 
-internal class LiveMapWorld(
-	worldsDirectory: File
-) {
+internal class LiveMapWorld(worldsDirectory: File) {
 	internal val worldDirectory = worldsDirectory.resolve("livemap")
 
 	internal val loadedRegions = mutableMapOf<Position2D<Short>, LiveMapRegion>()

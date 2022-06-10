@@ -35,7 +35,10 @@ class LiveMap : JavaPlugin(), Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onChunkLoadEvent(event: ChunkLoadEvent) {
-		processChunk(event.chunk) { world, regionPosition, regionChunkPosition ->
+		// Somehow a ChunkLoadEvent is called before a WorldLoadEvent, so add the world if it does not already exist.
+		val world = worlds.getOrPut(event.chunk.world) { LiveMapWorld(event.chunk.world.worldFolder) }
+
+		processChunk(event.chunk) { regionPosition, regionChunkPosition ->
 			val region = world.loadedRegions.getOrPut(regionPosition) {
 				LiveMapRegion(regionPosition, world.worldDirectory)
 			}
@@ -46,7 +49,9 @@ class LiveMap : JavaPlugin(), Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onChunkUnloadEvent(event: ChunkUnloadEvent) {
-		processChunk(event.chunk) { world, regionPosition, regionChunkPosition ->
+		val world = worlds[event.chunk.world]!!
+
+		processChunk(event.chunk) { regionPosition, regionChunkPosition ->
 			val region = world.loadedRegions[regionPosition]!!
 
 			region.loadedChunks.remove(regionChunkPosition)
@@ -61,7 +66,7 @@ class LiveMap : JavaPlugin(), Listener {
 
 	private inline fun processChunk(
 		chunk: Chunk,
-		handle: (world: LiveMapWorld, regionPosition: Position2D<Short>, regionChunkPosition: Position2D<Byte>) -> Unit
+		handle: (regionPosition: Position2D<Short>, regionChunkPosition: Position2D<Byte>) -> Unit
 	) {
 		val regionX = chunk.x.floorDiv(32).toShort()
 		val regionZ = chunk.z.floorDiv(32).toShort()
@@ -69,9 +74,6 @@ class LiveMap : JavaPlugin(), Listener {
 		val regionChunkX = (chunk.x - (regionX * 32)).toByte()
 		val regionChunkZ = (chunk.z - (regionZ * 32)).toByte()
 
-		// Somehow a ChunkLoadEvent is called before a WorldLoadEvent, so add the world if it does not already exist.
-		val world = worlds.getOrPut(chunk.world) { LiveMapWorld(chunk.world.worldFolder) }
-
-		handle(world, Position2D(regionX, regionZ), Position2D(regionChunkX, regionChunkZ))
+		handle(Position2D(regionX, regionZ), Position2D(regionChunkX, regionChunkZ))
 	}
 }
