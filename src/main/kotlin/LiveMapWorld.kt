@@ -8,12 +8,11 @@ internal class LiveMapWorld(bukkitWorld: World) {
 
 	internal val loadedRegions = mutableMapOf<Position2D<Short>, LiveMapRegion>()
 
+	private val paletteFile = worldDirectory.resolve("palette.lmp")
 	private val blockPalette: MutableList<Material>
 
 	init {
 		worldDirectory.mkdirs()
-
-		val paletteFile = worldDirectory.resolve("palette.lmp")
 
 		blockPalette = if (paletteFile.exists()) {
 			paletteFile.readLines().mapTo(mutableListOf()) { Material.valueOf(it) }
@@ -21,5 +20,15 @@ internal class LiveMapWorld(bukkitWorld: World) {
 			paletteFile.createNewFile()
 			mutableListOf()
 		}
+	}
+
+	internal fun close() {
+		loadedRegions.forEach { (_, region) ->
+			region.close()
+
+			paletteFile.writeText(blockPalette.joinToString("\n", "", "") { it.name })
+		}
+
+		loadedRegions.clear()
 	}
 }

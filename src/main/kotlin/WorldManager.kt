@@ -13,6 +13,14 @@ import org.bukkit.event.world.WorldUnloadEvent
 internal object WorldManager : Listener {
 	private val worlds: MutableMap<World, LiveMapWorld> = mutableMapOf()
 
+	internal fun close() {
+		worlds.forEach { (_, liveMapWorld) ->
+			liveMapWorld.close()
+		}
+
+		worlds.clear()
+	}
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	@Suppress("unused") // Entrypoint
 	fun onWorldInitEvent(event: WorldInitEvent) {
@@ -22,7 +30,7 @@ internal object WorldManager : Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	@Suppress("unused") // Entrypoint
 	fun onWorldUnloadEvent(event: WorldUnloadEvent) {
-		worlds.remove(event.world)
+		worlds.remove(event.world)!!.close()
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

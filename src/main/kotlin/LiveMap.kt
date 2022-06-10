@@ -10,4 +10,8 @@ class LiveMap : JavaPlugin() {
 
 		server.pluginManager.registerEvents(WorldManager, this)
 	}
+
+	override fun onDisable() {
+		WorldManager.close()
+	}
 }
