@@ -12,10 +12,10 @@ import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.event.world.WorldUnloadEvent
 import org.bukkit.plugin.java.JavaPlugin
 
+internal val worlds: MutableMap<World, LiveMapWorld> = mutableMapOf()
+
 @Suppress("unused") // Entrypoint
 class LiveMap : JavaPlugin(), Listener {
-	private val worlds = mutableMapOf<World, LiveMapWorld>()
-
 	override fun onEnable() {
 		Metrics(this, 15261)
 
