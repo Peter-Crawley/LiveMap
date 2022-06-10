@@ -8,6 +8,8 @@ class LiveMap : JavaPlugin() {
 	override fun onEnable() {
 		Metrics(this, 15261)
 
+		WorldManager.enable()
+
 		server.pluginManager.registerEvents(WorldManager, this)
 	}
 
