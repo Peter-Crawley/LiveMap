@@ -15,7 +15,7 @@ internal class LiveMapWorld(
 	init {
 		worldDirectory.mkdirs()
 
-		val paletteFile = worldDirectory.resolve("pallete.lmp")
+		val paletteFile = worldDirectory.resolve("palette.lmp")
 
 		blockPalette = if (paletteFile.exists()) {
 			paletteFile.readLines().mapTo(mutableListOf()) { Material.valueOf(it) }
