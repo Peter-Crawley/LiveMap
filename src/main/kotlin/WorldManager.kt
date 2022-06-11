@@ -47,9 +47,7 @@ internal object WorldManager : Listener {
 		worlds[event.world]!!.unregisterChunk(event.chunk)
 
 	internal fun close() {
-		worlds.forEach { (_, liveMapWorld) ->
-			liveMapWorld.close()
-		}
+		worlds.forEach { (_, liveMapWorld) -> liveMapWorld.close() }
 
 		worlds.clear()
 	}

@@ -33,6 +33,8 @@ internal class LiveMapWorld(bukkitWorld: World) {
 		val region = loadedRegions.getOrPut(regionPosition) { LiveMapRegion(regionPosition, worldDirectory) }
 
 		region.loadedChunks.add(regionChunkPosition)
+
+		updateChunk(region, regionChunkPosition, chunk)
 	}
 
 	internal fun unregisterChunk(chunk: Chunk) {
@@ -42,6 +44,8 @@ internal class LiveMapWorld(bukkitWorld: World) {
 
 		region.loadedChunks.remove(regionChunkPosition)
 
+		updateChunk(region, regionChunkPosition, chunk)
+
 		if (region.loadedChunks.isEmpty()) {
 			loadedRegions.remove(regionPosition)
 
@@ -49,9 +53,7 @@ internal class LiveMapWorld(bukkitWorld: World) {
 		}
 	}
 
-	// This is inlined because this function just exists to de-duplicate the math.
-	@Suppress("nothing_to_inline")
-	private inline fun getPositions(chunk: Chunk): Pair<Position2D<Short>, Position2D<Byte>> {
+	private fun getPositions(chunk: Chunk): Pair<Position2D<Short>, Position2D<Byte>> {
 		val regionX = chunk.x.floorDiv(32).toShort()
 		val regionZ = chunk.z.floorDiv(32).toShort()
 
@@ -61,10 +63,26 @@ internal class LiveMapWorld(bukkitWorld: World) {
 		return Pair(Position2D(regionX, regionZ), Position2D(regionChunkX, regionChunkZ))
 	}
 
-	internal fun close() {
-		loadedRegions.forEach { (_, region) ->
-			region.close()
+	private fun updateChunk(liveMapRegion: LiveMapRegion, regionChunkPosition: Position2D<Byte>, chunk: Chunk) {
+		val snapshot = chunk.getChunkSnapshot(true, false, false)
+
+		for (x in 0..15) for (z in 0..15) {
+			val y = snapshot.getHighestBlockYAt(x, z)
+			val material = if (y != -1) snapshot.getBlockType(x, y, z) else Material.AIR
+
+			var id = blockPalette.indexOf(material)
+
+			if (id == -1) {
+				blockPalette.add(material)
+				id = blockPalette.lastIndex
+			}
+
+			liveMapRegion.data.putShort(((regionChunkPosition.x * 16 + x) * 32 * 16 + regionChunkPosition.z * 16 + z) * 2, id.toShort())
 		}
+	}
+
+	internal fun close() {
+		loadedRegions.forEach { (_, region) -> region.close() }
 
 		blockPaletteFile.writeText(blockPalette.joinToString("\n", "", "") { it.name })
 
