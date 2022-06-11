@@ -68,7 +68,7 @@ internal class LiveMapWorld(bukkitWorld: World) {
 
 		for (x in 0..15) for (z in 0..15) {
 			val y = snapshot.getHighestBlockYAt(x, z)
-			val material = if (y != -1) snapshot.getBlockType(x, y, z) else Material.AIR
+			val material = if (y > chunk.world.minHeight) snapshot.getBlockType(x, y, z) else Material.AIR
 
 			var id = blockPalette.indexOf(material)
 
