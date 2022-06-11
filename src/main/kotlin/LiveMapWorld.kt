@@ -75,16 +75,20 @@ internal class LiveMapWorld(bukkitWorld: World) {
 			if (id == -1) {
 				blockPalette.add(material)
 				id = blockPalette.lastIndex
+				writeBlockPaletteFile()
 			}
 
 			liveMapRegion.data.putShort(((regionChunkPosition.x * 16 + x) * 32 * 16 + regionChunkPosition.z * 16 + z) * 2, id.toShort())
 		}
 	}
 
+	private fun writeBlockPaletteFile() =
+		blockPaletteFile.writeText(blockPalette.joinToString("\n", "", "") { it.name })
+
 	internal fun close() {
 		loadedRegions.forEach { (_, region) -> region.close() }
 
-		blockPaletteFile.writeText(blockPalette.joinToString("\n", "", "") { it.name })
+		writeBlockPaletteFile()
 
 		loadedRegions.clear()
 	}
