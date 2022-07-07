@@ -20,7 +20,7 @@ dependencies {
 	implementation("org.bstats:bstats-bukkit:3.0.0")
 
 	// Loaded by Server
-	compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.7.0")
+	compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
 }
 
 tasks {
