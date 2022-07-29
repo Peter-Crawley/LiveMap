@@ -14,13 +14,10 @@ repositories {
 
 dependencies {
 	// Provided by Server
-	compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+	compileOnly("io.papermc.paper:paper-api:1.19.1-R0.1-SNAPSHOT")
 
 	// Provided by LiveMap
 	implementation("org.bstats:bstats-bukkit:3.0.0")
-
-	// Loaded by Server
-	compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
 }
 
 tasks {
@@ -33,7 +30,7 @@ tasks {
 	}
 
 	runServer {
-		minecraftVersion("1.18.2")
+		minecraftVersion("1.19.1")
 	}
 
 	build {
